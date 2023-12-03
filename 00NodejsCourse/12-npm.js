@@ -20,7 +20,14 @@
 // npm init -y (everything default)
 
 // NOTE: package.json is important when we start sharing our project
-// with other developeres
+// with other developeres ==> we just sharing the code without
+// dragging the massive node_modules folder.
+
+// devdependencies ==> because we really need nodemon 
+// in production (restarting, testing, linting, formatting).
+
+//  UNINSTALL =>  npm uninstall  <packagename>
+
 // ================================================ 
 
 const _ = require('lodash');
