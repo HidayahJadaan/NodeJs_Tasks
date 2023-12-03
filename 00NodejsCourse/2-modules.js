@@ -21,7 +21,7 @@
 // interacting with operating system as well as  the server.
 
 // 2. PATH: alloes you to interact with the file paths easily
-// 3. FS
-// 4. HTTP
+// 3. FS: working with file modules
+// 4. HTTP:  allow us to set up the web server
 
 // =====================================
