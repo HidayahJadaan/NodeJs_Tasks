@@ -9,6 +9,6 @@
 
 console.log(__dirname);
 
-setInterval(()=>{
+setTimeout(()=>{
     console.log('hello hidayah!!!!');
 }, 1000);
