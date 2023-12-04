@@ -1,15 +1,17 @@
 {
-  "name": "tutorial",
+  "name": "nodejs_tasks",
   "version": "1.0.0",
-  "description": "",
-  "main": "./00NodejsCourse/1-intro.js",
-  "scripts": {
-    "start": "nodemon app.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "description": "\"\"",
+  "main": "./00NodejsCourse/app.js",
   "dependencies": {
     "lodash": "^4.17.21"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Hidayah",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.0.2"
   }
 }
