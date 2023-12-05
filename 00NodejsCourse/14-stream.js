@@ -1,4 +1,4 @@
-const fs = require('fs')
+import fs from 'fs';
 
 const readStream = fs.createReadStream("./content/stream.txt", 'utf8');
 const writeStream = fs.createWriteStream("./content/outputStream.txt", "utf8");

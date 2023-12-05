@@ -1,5 +1,5 @@
 {
-  "name": "nodejs_tasks",
+  "name": "nodejs_tasks", 
   "version": "1.0.0",
   "description": "\"\"",
   "main": "./00NodejsCourse/app.js",
