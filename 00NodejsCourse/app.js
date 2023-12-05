@@ -13,9 +13,11 @@ const data = require("./5-alternative");
 // console.log(data);
 
 // ================= WORKING WITH MODULES ======================
-const _ = require('lodash');
-// console.log(_);
-const items = [1, [2, [3,[4]]]];
-const newItems = _.flattenDeep(items)
-console.log(newItems);
-console.log("Hello Hidayah");
+// const _ = require('lodash');
+// // console.log(_);
+// const items = [1, [2, [3,[4]]]];
+// const newItems = _.flattenDeep(items)
+
+// console.log(newItems);
+// console.log("Hello Hidayah");
+
