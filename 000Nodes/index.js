@@ -13,14 +13,29 @@ console.log(__dirname);
 
 // READING & WRITING FILES (AsSync---- non-Blocking Way)
 
-fs.readFile('./texts/start.txt', 'utf-8', (err, data)=>{
-    // console.log(data);
+// fs.readFile('./texts/start.txt', 'utf-8', (err, data)=>{
+//     // console.log(data);
 
-    fs.writeFile('./texts/final.txt', `${data}\n NEW DATA HAS BEEN WRITTEN`, 'utf-8', err =>{
-        console.log('YOUR DATA HAS BEEN WRITTEN');
-    })
+//     fs.writeFile('./texts/final.txt', `${data}\n NEW DATA HAS BEEN WRITTEN`, 'utf-8', err =>{
+//         console.log('YOUR DATA HAS BEEN WRITTEN');
+//     })
+// });
+
+
+
+// console.log('Non-Blocking Statements........');
+
+// =====================================
+// CREATING SIMPLE WEB SERVER
+
+const http = require('http');
+
+const server = http.createServer((req, res)=>{
+    // SEND BACK RESPONSE OBJECT TO THE USER ON EACH TIME A NEW REQUEST IS HAPPENED
+    res.end('HELLO FROM THE SERVER');
+
 });
-
-
-
-console.log('Non-Blocking Statements........');
+// START LISTENING ON THE UPCOMMING REQUESTS
+server.listen(8000, '127.0.0.1', ()=>{
+    console.log('LISTENING TO REQUESTS ON PORT 8000');
+})
