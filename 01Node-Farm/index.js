@@ -2,8 +2,9 @@
 
 const http = require("http");
 const url = require("url");
-
 const fs = require("fs");
+const slugify = require('slugify');
+
 
 const server = http.createServer((req, res) => {
   const { query, pathname } = url.parse(req.url, true);
@@ -12,6 +13,10 @@ const server = http.createServer((req, res) => {
   const data = fs.readFileSync(`${__dirname}/dev-data/data.json`);
   const dataObj = JSON.parse(data); //array of objects
 
+
+  const slugs = dataObj.map(el => slugify(el.productName),{lower: true});
+  // console.log(slugs);
+  
   // ===================================
 
   // using regular expression not "" | ' ==> because some times we have multiple items
