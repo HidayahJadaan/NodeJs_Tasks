@@ -1,0 +1,145 @@
+const express = require("express");
+const router = express.Router();
+const joi = require("joi");
+// =================================================================
+
+const authors = [
+  {
+    id:1,
+    firstName:"Hidayah",
+    lastName:"Jadaan",
+    nationality:"Jordanian",
+    image:"default-image.jpg",
+  },
+
+  {
+    id:2,
+    firstName:"Ahmad",
+    lastName:"Jadaan",
+    nationality:"Jordanian",
+    image:"default-image.jpg",
+  },
+  {
+    id:3,
+    firstName:"Mohammed",
+    lastName:"Jadaan",
+    nationality:"Jordanian",
+    image:"default-image.jpg",
+  },
+];
+
+// ROUTES HANDLERS
+// =================================================================
+/*
+@desc Get All authors
+@method GET
+@route /api/authors
+@access public
+*/
+router.get("/", (req, res) => {
+  res.status(200).json(authors);
+});
+// =================================================================
+/*
+@desc GET certain author
+@method GET
+@route /api/authors/:id
+@access public
+*/
+router.get("/:id", (req, res) => {
+  const author = authors.find((author) => author.id === parseInt(req.params.id));
+  if (author) {
+    res.status(200).json(author);
+  } else {
+    // return value is null
+    res.status(404).json({ message: "Author not found" });
+  }
+});
+// =================================================================
+/*
+@desc Create a new Book
+@method POST
+@route /api/authors/:id
+@access public
+*/
+router.post("/", (req, res) => {
+  const { err } = ValidateAuthor(req.body);
+  if (err) {
+    return res.status(400).json({ message: err.details[0].message });
+  }
+
+  const newAuthor = {
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    nationality: req.body.nationality,
+    image: req.body.image,
+  };
+
+  authors.push(newAuthor);
+  // 201 --> Creatred Successfully
+  res.status(201).json(newAuthor);
+});
+// =================================================================
+/*
+@desc Update Certain book
+@method PUT
+@route /api/authors/:id
+@access public
+*/
+router.put("/:id", (req, res) => {
+  const { err } = ValidateUpdateAuthor(req.body);
+  if (err) {
+    return res.status(400).json({ message: err.details[0].message });
+  }
+
+  const author = authors.find((author) => author.id === parseInt(req.params.id));
+  if (author) {
+    res.status(200).json({
+      message: "Author's Data Updated Successfully",
+    });
+  } else {
+    res.status(404).json({ message: "Author not found" });
+  }
+});
+
+// =================================================================
+/*
+@desc Delete Certain book
+@method DELETE
+@route /api/authors/:id
+@access public
+*/
+router.delete("/:id", (req, res) => {
+  const author = authors.find((author) => author.id === parseInt(req.params.id));
+  if (author) {
+    res.status(200).json({
+      message: "Author Deleted Successfully",
+    });
+  } else {
+    res.status(404).json({ message: "Author not found" });
+  }
+});
+// =================================================================
+// VALIDATE CREATE Author ==> POST
+function ValidateAuthor(REQOBJECT) {
+  const schema = joi.object({
+    firstName: joi.string().required(),
+    lastName: joi.string().required(),
+    nationality: joi.string().required(),
+    image: joi.string().required(),
+  });
+  return schema.validate(REQOBJECT);
+}
+// =================================================================
+// VALIDATE UPDATE Author ==> PUT
+function ValidateUpdateAuthor(REQOBJECT) {
+  const schema = joi.object({
+    firstName: joi.string(),
+    lastName: joi.string(),
+    nationality: joi.string(),
+    image: joi.string().min(0),
+  });
+  return err = schema.validate(REQOBJECT);
+}
+
+module.exports = router;
