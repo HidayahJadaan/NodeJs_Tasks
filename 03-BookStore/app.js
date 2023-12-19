@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const dotenv = require('dotenv');
 const booksPath = require('./routes/books');
 const authorsPath = require('./routes/authors');
+const AuthPath = require('./routes/auth');
 const logger = require('./middlewares/logger');
 const {notFound, errorsHandler} = require('./middlewares/errors');
 dotenv.config();
@@ -24,6 +25,7 @@ app.use(logger);
 // Routes
 app.use('/api/books', booksPath);
 app.use('/api/authors', authorsPath);
+app.use('/api/auth', AuthPath);
 
 // ERROR HANDLER MIDDLEWARE
 app.use(notFound);
