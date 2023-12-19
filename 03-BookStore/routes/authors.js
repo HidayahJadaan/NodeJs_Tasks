@@ -2,31 +2,31 @@ const express = require("express");
 const router = express.Router();
 const joi = require("joi");
 
-const {Author} = require("./../models/Authors") 
-  // =================================================================
+const { Author } = require("./../models/Authors");
+// =================================================================
 
 const authors = [
   {
-    id:1,
-    firstName:"Hidayah",
-    lastName:"Jadaan",
-    nationality:"Jordanian",
-    image:"default-image.jpg",
+    id: 1,
+    firstName: "Hidayah",
+    lastName: "Jadaan",
+    nationality: "Jordanian",
+    image: "default-image.jpg",
   },
 
   {
-    id:2,
-    firstName:"Ahmad",
-    lastName:"Jadaan",
-    nationality:"Jordanian",
-    image:"default-image.jpg",
+    id: 2,
+    firstName: "Ahmad",
+    lastName: "Jadaan",
+    nationality: "Jordanian",
+    image: "default-image.jpg",
   },
   {
-    id:3,
-    firstName:"Mohammed",
-    lastName:"Jadaan",
-    nationality:"Jordanian",
-    image:"default-image.jpg",
+    id: 3,
+    firstName: "Mohammed",
+    lastName: "Jadaan",
+    nationality: "Jordanian",
+    image: "default-image.jpg",
   },
 ];
 
@@ -39,7 +39,6 @@ const authors = [
 @access public
 */
 router.get("/", async (req, res) => {
-
   try {
     const AuthorsList = await Author.find();
     // FILTERING
@@ -49,7 +48,9 @@ router.get("/", async (req, res) => {
     res.status(200).json(AuthorsList);
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: "Something went wrong, Can't Get All Authors!!!" });
+    res
+      .status(500)
+      .json({ message: "Something went wrong, Can't Get All Authors!!!" });
   }
 });
 // =================================================================
@@ -60,15 +61,16 @@ router.get("/", async (req, res) => {
 @access public
 */
 router.get("/:id", async (req, res) => {
-try{
-  const author = await Author.findById(req.params.id);
-  
+  try {
+    const author = await Author.findById(req.params.id);
+
     res.status(200).json(author);
- 
-}catch(err){
-  console.log(err.message)
-  res.status(500).json({message:"Something went wrong, BAD REQUESTING THIS AUTHOR!!!"})
-}
+  } catch (err) {
+    console.log(err.message);
+    res
+      .status(500)
+      .json({ message: "Something went wrong, BAD REQUESTING THIS AUTHOR!!!" });
+  }
 });
 // =================================================================
 /*
@@ -83,23 +85,21 @@ router.post("/", async (req, res) => {
     return res.status(400).json({ message: err.details[0].message });
   }
 
-try{
-  const newAuthor = new Author ( {
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    nationality: req.body.nationality,
-    image: req.body.image,
-  });
-  const result = await newAuthor.save();
-  res.status(201).json(result);
+  try {
+    const newAuthor = new Author({
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      nationality: req.body.nationality,
+      image: req.body.image,
+    });
+    const result = await newAuthor.save();
+    res.status(201).json(result);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Something went wrong!!!" });
+  }
 
-}catch(err){
-  console.log(err)
-  res.status(500).json({message:"Something went wrong!!!"})
-}
-
-
-// =================================================================
+  // =================================================================
   // BEFORE DATABSE
   // authors.push(newAuthor);
   // 201 --> Creatred Successfully
@@ -112,20 +112,34 @@ try{
 @route /api/authors/:id
 @access public
 */
-router.put("/:id", (req, res) => {
+router.put("/:id", async (req, res) => {
   const { err } = ValidateUpdateAuthor(req.body);
   if (err) {
     return res.status(400).json({ message: err.details[0].message });
   }
 
-  const author = authors.find((author) => author.id === parseInt(req.params.id));
-  if (author) {
-    res.status(200).json({
-      message: "Author's Data Updated Successfully",
-    });
-  } else {
-    res.status(404).json({ message: "Author not found" });
+  try {
+    const author = await Author.findByIdAndUpdate(req.params.id, {
+      $set: {
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        nationality: req.body.nationality,
+        image: req.body.image,
+      },
+    }, {new: true});
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Can't Update Author!!!" });
   }
+  // BEFORE DATABASE
+  // const author = authors.find((author) => author.id === parseInt(req.params.id));
+  // if (author) {
+  //   res.status(200).json({
+  //     message: "Author's Data Updated Successfully",
+  //   });
+  // } else {
+  //   res.status(404).json({ message: "Author not found" });
+  // }
 });
 
 // =================================================================
@@ -136,7 +150,9 @@ router.put("/:id", (req, res) => {
 @access public
 */
 router.delete("/:id", (req, res) => {
-  const author = authors.find((author) => author.id === parseInt(req.params.id));
+  const author = authors.find(
+    (author) => author.id === parseInt(req.params.id)
+  );
   if (author) {
     res.status(200).json({
       message: "Author Deleted Successfully",
@@ -165,7 +181,7 @@ function ValidateUpdateAuthor(REQOBJECT) {
     nationality: joi.string(),
     image: joi.string().min(0),
   });
-  return err = schema.validate(REQOBJECT);
+  return (err = schema.validate(REQOBJECT));
 }
 
 module.exports = router;
