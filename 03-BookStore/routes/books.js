@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const joi = require("joi");
-
+const { Book, ValidateBook, ValidateUpdateBook } = require("./../models/Book");
 
 // =================================================================
 
@@ -52,8 +52,9 @@ router.get("/", (req, res) => {
 @route /api/books/:id
 @access public
 */
-router.get("/:id", (req, res) => {
-  const book = books.find((book) => book.id === parseInt(req.params.id));
+router.get("/:id", async (req, res) => {
+  // const book = books.find((book) => book.id === parseInt(req.params.id));
+  const book = await Book.findById(req.params.id);
   if (book) {
     res.status(200).json(book);
   } else {
@@ -68,22 +69,31 @@ router.get("/:id", (req, res) => {
 @route /api/books/:id
 @access public
 */
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
   const { err } = ValidateBook(req.body);
   if (err) {
     return res.status(400).json({ message: err.details[0].message });
   }
 
-  const newBook = {
+  // const newBook = {
+  //   title: req.body.title,
+  //   author: req.body.author,
+  //   description: req.body.description,
+  //   price: req.body.price,
+  // };
+  const newBook = new Book({
     title: req.body.title,
     author: req.body.author,
     description: req.body.description,
     price: req.body.price,
-  };
+    cover: req.body.cover,
+  });
 
-  books.push(newBook);
+  const NewBook = await newBook.save();
+
+  // books.push(newBook);
   // 201 --> Creatred Successfully
-  res.status(201).json(newBook);
+  res.status(201).json(NewBook);
 });
 // =================================================================
 /*
@@ -98,7 +108,21 @@ router.put("/:id", (req, res) => {
     return res.status(400).json({ message: err.details[0].message });
   }
 
-  const book = books.find((book) => book.id === parseInt(req.params.id));
+  // const book = books.find((book) => book.id === parseInt(req.params.id));
+  const book = Book.findByIdAndUpdate(
+    req.params.id,
+
+    {
+      $set: {
+        title: req.body.title,
+        author: req.body.author,
+        description: req.body.description,
+        price: req.body.price,
+        cover: req.body.cover,
+      },
+    },
+    { new: true }
+  );
   if (book) {
     res.status(200).json({
       message: "Book Updated Successfully",
@@ -116,7 +140,8 @@ router.put("/:id", (req, res) => {
 @access public
 */
 router.delete("/:id", (req, res) => {
-  const book = books.find((book) => book.id === parseInt(req.params.id));
+  // const book = books.find((book) => book.id === parseInt(req.params.id));
+  const book = Book.findByIdAndDelete(req.params.id);
   if (book) {
     res.status(200).json({
       message: "Book Deleted Successfully",

@@ -5,30 +5,30 @@ const joi = require("joi");
 const { Author, ValidateAuthor, ValidateUpdateAuthor } = require("./../models/Authors");
 // =================================================================
 
-const authors = [
-  {
-    id: 1,
-    firstName: "Hidayah",
-    lastName: "Jadaan",
-    nationality: "Jordanian",
-    image: "default-image.jpg",
-  },
+// const authors = [
+//   {
+//     id: 1,
+//     firstName: "Hidayah",
+//     lastName: "Jadaan",
+//     nationality: "Jordanian",
+//     image: "default-image.jpg",
+//   },
 
-  {
-    id: 2,
-    firstName: "Ahmad",
-    lastName: "Jadaan",
-    nationality: "Jordanian",
-    image: "default-image.jpg",
-  },
-  {
-    id: 3,
-    firstName: "Mohammed",
-    lastName: "Jadaan",
-    nationality: "Jordanian",
-    image: "default-image.jpg",
-  },
-];
+//   {
+//     id: 2,
+//     firstName: "Ahmad",
+//     lastName: "Jadaan",
+//     nationality: "Jordanian",
+//     image: "default-image.jpg",
+//   },
+//   {
+//     id: 3,
+//     firstName: "Mohammed",
+//     lastName: "Jadaan",
+//     nationality: "Jordanian",
+//     image: "default-image.jpg",
+//   },
+// ];
 
 // ROUTES HANDLERS
 // =================================================================
@@ -150,9 +150,8 @@ router.put("/:id", async (req, res) => {
 @access public
 */
 router.delete("/:id", (req, res) => {
-  const author = authors.find(
-    (author) => author.id === parseInt(req.params.id)
-  );
+  // const author = authors.find((author) => author.id === parseInt(req.params.id));
+  const author = Author.findByIdAndDelete(req.params.id);
   if (author) {
     res.status(200).json({
       message: "Author Deleted Successfully",
