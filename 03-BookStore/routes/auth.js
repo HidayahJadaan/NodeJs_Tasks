@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
+const jwt = require('jsonwebtoken');
 const asyncHandler = require("express-async-handler");
 const {
     User,
@@ -43,7 +44,10 @@ router.post('/register', asyncHandler( async(req,res)=>{
     // SAVE IT TO THE DATABASE
     const userCreated = await newUser.save();
 // Don't Send Password To the User
-const token = null;
+// const token = null; ===> without JWT
+
+// USING JWT
+const token = jwt.sign({id: user._id, isAdmin: user.isAdmin}, process.env.JWT_SECRET_KEY);
 const {password, ...other} = userCreated._doc;
 
     res.status(201).json({...other, token});
@@ -77,7 +81,10 @@ router.post('/login', asyncHandler( async(req,res)=>{
 
 
 // Don't Send Password To the User
-const token = null;
+// const token = null; ===> without JWT
+
+// USING JWT
+const token = jwt.sign({id: user._id, isAdmin: user.isAdmin}, process.env.JWT_SECRET_KEY);
 const {password, ...other} = user._doc;
 
     res.status(201).json({...other, token});
