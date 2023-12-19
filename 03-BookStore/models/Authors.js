@@ -1,12 +1,5 @@
 const mongoose = require("mongoose");
-
-// CONNECTING TO THE DATABSE
-mongoose
-  .connect("mongodb://localhost:27017/BookStoreDB")
-  .then(() => console.log("Connected to MongoDB--- BookStroeDB"))
-  .catch((err) =>
-    console.log("Could not Connect To MongoDB -- BookStoreDB", err.message)
-  );
+const joi = require("joi");
 
 // CREATING AUTHOR SCHEMA
 const authorSchema = new mongoose.Schema({

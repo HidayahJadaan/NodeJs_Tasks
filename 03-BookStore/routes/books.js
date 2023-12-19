@@ -43,7 +43,8 @@ const { Book, ValidateBook, ValidateUpdateBook } = require("./../models/Book");
 @route /api/books
 @access public
 */
-router.get("/", asyncHandler((req, res) => {
+router.get("/", asyncHandler(async(req, res) => {
+  const books = await Book.find();
   res.status(200).json(books);
 }));
 // =================================================================
@@ -103,14 +104,14 @@ router.post("/", asyncHandler( async (req, res) => {
 @route /api/books/:id
 @access public
 */
-router.put("/:id", asyncHandler( (req, res) => {
+router.put("/:id", asyncHandler( async(req, res) => {
   const { err } = ValidateUpdateBook(req.body);
   if (err) {
     return res.status(400).json({ message: err.details[0].message });
   }
 
   // const book = books.find((book) => book.id === parseInt(req.params.id));
-  const book = Book.findByIdAndUpdate(
+  const book = await Book.findByIdAndUpdate(
     req.params.id,
 
     {
@@ -140,9 +141,9 @@ router.put("/:id", asyncHandler( (req, res) => {
 @route /api/books/:id
 @access public
 */
-router.delete("/:id", asyncHandler( (req, res) => {
+router.delete("/:id", asyncHandler( async(req, res) => {
   // const book = books.find((book) => book.id === parseInt(req.params.id));
-  const book = Book.findByIdAndDelete(req.params.id);
+  const book =await  Book.findByIdAndDelete(req.params.id);
   if (book) {
     res.status(200).json({
       message: "Book Deleted Successfully",

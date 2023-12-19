@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const joi = require("joi");
 const asyncHandler = require("express-async-handler");
 const {
   Author,
@@ -142,9 +141,9 @@ router.put("/:id", asyncHandler( async (req, res) => {
 @route /api/authors/:id
 @access public
 */
-router.delete("/:id", asyncHandler( (req, res) => {
+router.delete("/:id", asyncHandler( async(req, res) => {
   // const author = authors.find((author) => author.id === parseInt(req.params.id));
-  const author = Author.findByIdAndDelete(req.params.id);
+  const author = await Author.findByIdAndDelete(req.params.id);
   if (author) {
     res.status(200).json({
       message: "Author Deleted Successfully",

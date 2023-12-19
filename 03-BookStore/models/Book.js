@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const joi = require("joi");
 
 // BOOK SCHEMA
 const bookSchema = new mongoose.Schema({
@@ -17,7 +18,6 @@ const bookSchema = new mongoose.Schema({
     },
     image: {
         type: String,
-        required: true
     },
     price: {
         type: Number,
@@ -38,7 +38,7 @@ const Book = mongoose.model('Book', bookSchema);
 function ValidateBook(REQOBJECT) {
     const schema = joi.object({
       title: joi.string().min(3).max(200).required(),
-      author: joi.string().required(),
+      author: joi.string().length(24).required(),
       description: joi.string().required(),
       price: joi.number().min(0).required(),
       cover: joi.string().required,
@@ -50,7 +50,7 @@ function ValidateBook(REQOBJECT) {
   function ValidateUpdateBook(REQOBJECT) {
     const schema = joi.object({
       title: joi.string().min(3).max(200),
-      author: joi.string(),
+      author: joi.string().length(24), // Assuming ObjectId length is 24
       description: joi.string(),
       price: joi.number().min(0),
       cover: joi.string(),
