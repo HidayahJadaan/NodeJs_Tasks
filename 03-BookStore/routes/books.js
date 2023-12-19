@@ -1,35 +1,38 @@
 const express = require("express");
 const router = express.Router();
 const joi = require("joi");
+
+
 // =================================================================
 
-const books = [
-  {
-    id: 1,
-    title: "The Hobbit",
-    author: "Hidayah Jadaan",
-    description: "lorem ipsum dolor",
-    price: 77,
-    cover: "default1",
-  },
+// NO NEED FOR THIS WHEN WE ARE WORKING WITH MONGOOSE
+// const books = [
+//   {
+//     id: 1,
+//     title: "The Hobbit",
+//     author: "Hidayah Jadaan",
+//     description: "lorem ipsum dolor",
+//     price: 77,
+//     cover: "default1",
+//   },
 
-  {
-    id: 2,
-    title: "The Hobbit 2",
-    author: "Hidayah Jadaan 2",
-    description: "lorem ipsum dolor 2",
-    price: 27,
-    cover: "default2",
-  },
-  {
-    id: 3,
-    title: "The Hobbit 3",
-    author: "Hidayah Jadaan 3",
-    description: "lorem ipsum dolor 3",
-    price: 71,
-    cover: "default3",
-  },
-];
+//   {
+//     id: 2,
+//     title: "The Hobbit 2",
+//     author: "Hidayah Jadaan 2",
+//     description: "lorem ipsum dolor 2",
+//     price: 27,
+//     cover: "default2",
+//   },
+//   {
+//     id: 3,
+//     title: "The Hobbit 3",
+//     author: "Hidayah Jadaan 3",
+//     description: "lorem ipsum dolor 3",
+//     price: 71,
+//     cover: "default3",
+//   },
+// ];
 
 // ROUTES HANDLERS
 // =================================================================
@@ -123,28 +126,5 @@ router.delete("/:id", (req, res) => {
   }
 });
 // =================================================================
-// VALIDATE CREATE BOOK ==> POST
-function ValidateBook(REQOBJECT) {
-  const schema = joi.object({
-    title: joi.string().min(3).max(200).required(),
-    author: joi.string().required(),
-    description: joi.string().required(),
-    price: joi.number().min(0).required(),
-    cover: joi.string().required,
-  });
-  return schema.validate(REQOBJECT);
-}
-// =================================================================
-// VALIDATE UPDATE BOOK ==> PUT
-function ValidateUpdateBook(REQOBJECT) {
-  const schema = joi.object({
-    title: joi.string().min(3).max(200),
-    author: joi.string(),
-    description: joi.string(),
-    price: joi.number().min(0),
-    cover: joi.string(),
-  });
-  return err = schema.validate(REQOBJECT);
-}
 
 module.exports = router;

@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const joi = require("joi");
 
-const { Author } = require("./../models/Authors");
+const { Author, ValidateAuthor, ValidateUpdateAuthor } = require("./../models/Authors");
 // =================================================================
 
 const authors = [
@@ -162,26 +162,5 @@ router.delete("/:id", (req, res) => {
   }
 });
 // =================================================================
-// VALIDATE CREATE Author ==> POST
-function ValidateAuthor(REQOBJECT) {
-  const schema = joi.object({
-    firstName: joi.string().required(),
-    lastName: joi.string().required(),
-    nationality: joi.string().required(),
-    image: joi.string().required(),
-  });
-  return schema.validate(REQOBJECT);
-}
-// =================================================================
-// VALIDATE UPDATE Author ==> PUT
-function ValidateUpdateAuthor(REQOBJECT) {
-  const schema = joi.object({
-    firstName: joi.string(),
-    lastName: joi.string(),
-    nationality: joi.string(),
-    image: joi.string().min(0),
-  });
-  return (err = schema.validate(REQOBJECT));
-}
 
 module.exports = router;
