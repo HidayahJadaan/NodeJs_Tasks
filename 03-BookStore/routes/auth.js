@@ -48,6 +48,40 @@ const {password, ...other} = userCreated._doc;
 
     res.status(201).json({...other, token});
 }));
+// =================================================================
+/*
+@desc Login user
+@method POST
+@route api/auth/login
+@access public
+*/
+router.post('/login', asyncHandler( async(req,res)=>{
+
+    // VALIDATION
+    const {error} = validateLoginUser(req.body);
+    if(error){
+        return res.status(400).json({error:error.details[0].message});
+    }
+
+    let user = await User.findOne({email: req.body.email});
+// CHECKING Credientals From User's Email
+    if(!user){
+        return res.status(400).json({error:'INVALID EMAIL OR PASSWORD'});
+    }
+// PASSWORD MATCHING
+   const isPasswordsMatch = await bcrypt.compare(req.body.password, user.password);
+
+   if(!isPasswordsMatch){
+    return res.status(400).json({error:'INVALID EMAIL OR PASSWORD'});
+   }
+
+
+// Don't Send Password To the User
+const token = null;
+const {password, ...other} = user._doc;
+
+    res.status(201).json({...other, token});
+}));
 
 // =================================================================
 
