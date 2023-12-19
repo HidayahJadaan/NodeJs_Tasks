@@ -14,7 +14,7 @@ const authorSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  lasName: {
+  lastName: {
     type: String,
     required: true,
   },
@@ -26,9 +26,11 @@ const authorSchema = new mongoose.Schema({
     type: String,
     default: "avator.png",
   },
-  timestamp: true,
 });
+
+authorSchema.set("timestamps", true);
+
 // CREATING AUTHOR MODEL
 const Author = mongoose.model("Author", authorSchema);
 
-module.exports = Author;
+module.exports = {Author};

@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const joi = require("joi");
-// =================================================================
+
+const {Author} = require("./../models/Authors") 
+  // =================================================================
 
 const authors = [
   {
@@ -62,22 +64,33 @@ router.get("/:id", (req, res) => {
 @route /api/authors/:id
 @access public
 */
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
   const { err } = ValidateAuthor(req.body);
   if (err) {
     return res.status(400).json({ message: err.details[0].message });
   }
 
-  const newAuthor = {
+try{
+  const newAuthor = new Author ( {
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     nationality: req.body.nationality,
     image: req.body.image,
-  };
+  });
+  const result = await newAuthor.save();
+  res.status(201).json(result);
 
-  authors.push(newAuthor);
+}catch(err){
+  console.log(err)
+  res.status(500).json({message:"Something went wrong!!!"})
+}
+
+
+// =================================================================
+  // BEFORE DATABSE
+  // authors.push(newAuthor);
   // 201 --> Creatred Successfully
-  res.status(201).json(newAuthor);
+  // res.status(201).json(newAuthor);
 });
 // =================================================================
 /*
