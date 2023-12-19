@@ -38,8 +38,19 @@ const authors = [
 @route /api/authors
 @access public
 */
-router.get("/", (req, res) => {
-  res.status(200).json(authors);
+router.get("/", async (req, res) => {
+
+  try {
+    const AuthorsList = await Author.find();
+    // FILTERING
+    // const AuthorsList = await Author.find().sort({firstNAme:1});
+    // const AuthorsList = await Author.find().sort({firstNAme:1}).select("firstName lastName -_id");
+
+    res.status(200).json(AuthorsList);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Something went wrong, Can't Get All Authors!!!" });
+  }
 });
 // =================================================================
 /*
@@ -48,14 +59,16 @@ router.get("/", (req, res) => {
 @route /api/authors/:id
 @access public
 */
-router.get("/:id", (req, res) => {
-  const author = authors.find((author) => author.id === parseInt(req.params.id));
-  if (author) {
+router.get("/:id", async (req, res) => {
+try{
+  const author = await Author.findById(req.params.id);
+  
     res.status(200).json(author);
-  } else {
-    // return value is null
-    res.status(404).json({ message: "Author not found" });
-  }
+ 
+}catch(err){
+  console.log(err.message)
+  res.status(500).json({message:"Something went wrong, BAD REQUESTING THIS AUTHOR!!!"})
+}
 });
 // =================================================================
 /*
