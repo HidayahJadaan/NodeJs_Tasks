@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const joi = require("joi");
+const asyncHandler = require("express-async-handler");
 const { Book, ValidateBook, ValidateUpdateBook } = require("./../models/Book");
 
 // =================================================================
@@ -42,9 +43,9 @@ const { Book, ValidateBook, ValidateUpdateBook } = require("./../models/Book");
 @route /api/books
 @access public
 */
-router.get("/", (req, res) => {
+router.get("/", asyncHandler((req, res) => {
   res.status(200).json(books);
-});
+}));
 // =================================================================
 /*
 @desc GET certain Book
@@ -52,7 +53,7 @@ router.get("/", (req, res) => {
 @route /api/books/:id
 @access public
 */
-router.get("/:id", async (req, res) => {
+router.get("/:id", asyncHandler( async (req, res) => {
   // const book = books.find((book) => book.id === parseInt(req.params.id));
   const book = await Book.findById(req.params.id);
   if (book) {
@@ -61,7 +62,7 @@ router.get("/:id", async (req, res) => {
     // return value is null
     res.status(404).json({ message: "Book not found" });
   }
-});
+}));
 // =================================================================
 /*
 @desc Create a new Book
@@ -69,7 +70,7 @@ router.get("/:id", async (req, res) => {
 @route /api/books/:id
 @access public
 */
-router.post("/", async (req, res) => {
+router.post("/", asyncHandler( async (req, res) => {
   const { err } = ValidateBook(req.body);
   if (err) {
     return res.status(400).json({ message: err.details[0].message });
@@ -94,7 +95,7 @@ router.post("/", async (req, res) => {
   // books.push(newBook);
   // 201 --> Creatred Successfully
   res.status(201).json(NewBook);
-});
+}));
 // =================================================================
 /*
 @desc Update Certain book
@@ -102,7 +103,7 @@ router.post("/", async (req, res) => {
 @route /api/books/:id
 @access public
 */
-router.put("/:id", (req, res) => {
+router.put("/:id", asyncHandler( (req, res) => {
   const { err } = ValidateUpdateBook(req.body);
   if (err) {
     return res.status(400).json({ message: err.details[0].message });
@@ -130,7 +131,7 @@ router.put("/:id", (req, res) => {
   } else {
     res.status(404).json({ message: "Book not found" });
   }
-});
+}));
 
 // =================================================================
 /*
@@ -139,7 +140,7 @@ router.put("/:id", (req, res) => {
 @route /api/books/:id
 @access public
 */
-router.delete("/:id", (req, res) => {
+router.delete("/:id", asyncHandler( (req, res) => {
   // const book = books.find((book) => book.id === parseInt(req.params.id));
   const book = Book.findByIdAndDelete(req.params.id);
   if (book) {
@@ -149,7 +150,7 @@ router.delete("/:id", (req, res) => {
   } else {
     res.status(404).json({ message: "Book not found" });
   }
-});
+}));
 // =================================================================
 
 module.exports = router;

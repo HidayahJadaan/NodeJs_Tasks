@@ -1,8 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const joi = require("joi");
-
-const { Author, ValidateAuthor, ValidateUpdateAuthor } = require("./../models/Authors");
+const asyncHandler = require("express-async-handler");
+const {
+  Author,
+  ValidateAuthor,
+  ValidateUpdateAuthor,
+} = require("./../models/Authors");
 // =================================================================
 
 // const authors = [
@@ -38,21 +42,18 @@ const { Author, ValidateAuthor, ValidateUpdateAuthor } = require("./../models/Au
 @route /api/authors
 @access public
 */
-router.get("/", async (req, res) => {
-  try {
+router.get(
+  "/",
+  asyncHandler(async (req, res) => {
     const AuthorsList = await Author.find();
     // FILTERING
     // const AuthorsList = await Author.find().sort({firstNAme:1});
     // const AuthorsList = await Author.find().sort({firstNAme:1}).select("firstName lastName -_id");
 
     res.status(200).json(AuthorsList);
-  } catch (err) {
-    console.log(err);
-    res
-      .status(500)
-      .json({ message: "Something went wrong, Can't Get All Authors!!!" });
-  }
-});
+
+  })
+);
 // =================================================================
 /*
 @desc GET certain author
@@ -60,18 +61,14 @@ router.get("/", async (req, res) => {
 @route /api/authors/:id
 @access public
 */
-router.get("/:id", async (req, res) => {
-  try {
+router.get(
+  "/:id",
+  asyncHandler(async (req, res) => {
     const author = await Author.findById(req.params.id);
-
     res.status(200).json(author);
-  } catch (err) {
-    console.log(err.message);
-    res
-      .status(500)
-      .json({ message: "Something went wrong, BAD REQUESTING THIS AUTHOR!!!" });
-  }
-});
+   
+  })
+);
 // =================================================================
 /*
 @desc Create a new Book
@@ -79,13 +76,12 @@ router.get("/:id", async (req, res) => {
 @route /api/authors/:id
 @access public
 */
-router.post("/", async (req, res) => {
+router.post("/", asyncHandler( async (req, res) => {
   const { err } = ValidateAuthor(req.body);
   if (err) {
     return res.status(400).json({ message: err.details[0].message });
   }
 
-  try {
     const newAuthor = new Author({
       firstName: req.body.firstName,
       lastName: req.body.lastName,
@@ -94,17 +90,15 @@ router.post("/", async (req, res) => {
     });
     const result = await newAuthor.save();
     res.status(201).json(result);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: "Something went wrong!!!" });
-  }
+
+  
 
   // =================================================================
   // BEFORE DATABSE
   // authors.push(newAuthor);
   // 201 --> Creatred Successfully
   // res.status(201).json(newAuthor);
-});
+}));
 // =================================================================
 /*
 @desc Update Certain book
@@ -112,25 +106,24 @@ router.post("/", async (req, res) => {
 @route /api/authors/:id
 @access public
 */
-router.put("/:id", async (req, res) => {
+router.put("/:id", asyncHandler( async (req, res) => {
   const { err } = ValidateUpdateAuthor(req.body);
   if (err) {
     return res.status(400).json({ message: err.details[0].message });
   }
-
-  try {
-    const author = await Author.findByIdAndUpdate(req.params.id, {
-      $set: {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        nationality: req.body.nationality,
-        image: req.body.image,
+    const author = await Author.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: {
+          firstName: req.body.firstName,
+          lastName: req.body.lastName,
+          nationality: req.body.nationality,
+          image: req.body.image,
+        },
       },
-    }, {new: true});
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: "Can't Update Author!!!" });
-  }
+      { new: true }
+    );
+
   // BEFORE DATABASE
   // const author = authors.find((author) => author.id === parseInt(req.params.id));
   // if (author) {
@@ -140,7 +133,7 @@ router.put("/:id", async (req, res) => {
   // } else {
   //   res.status(404).json({ message: "Author not found" });
   // }
-});
+}));
 
 // =================================================================
 /*
@@ -149,7 +142,7 @@ router.put("/:id", async (req, res) => {
 @route /api/authors/:id
 @access public
 */
-router.delete("/:id", (req, res) => {
+router.delete("/:id", asyncHandler( (req, res) => {
   // const author = authors.find((author) => author.id === parseInt(req.params.id));
   const author = Author.findByIdAndDelete(req.params.id);
   if (author) {
@@ -159,7 +152,7 @@ router.delete("/:id", (req, res) => {
   } else {
     res.status(404).json({ message: "Author not found" });
   }
-});
+}));
 // =================================================================
 
 module.exports = router;
