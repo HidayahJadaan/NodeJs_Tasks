@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
-const {verifyToken} = require("../middlewares/verifyToken");
 const asyncHandler = require("express-async-handler");
+const {verifyToken, VerifyTokenAndAdmin, VerifyTokenAndAuthorization } = require("../middlewares/verifyToken");
 const {
   User,
   validateRegisterUser,
@@ -18,12 +18,17 @@ const {
 @access private
 */
 
-router.put("/:id", verifyToken, asyncHandler(async (req, res) => {
+router.put("/:id", VerifyTokenAndAuthorization, asyncHandler(async (req, res) => {
     // // AUTHORIZATION CHECKING ...
-    if (req.user.id !== req.params.id) {
-      // 403 --> Forbidden
-      return res.status(403).json({ error: "Unauthorized Access!!, You only can update your data" });
-    }
+    // 1. Without Middleware
+    // if (req.user.id !== req.params.id) {
+    //   // 403 --> Forbidden
+    //   return res.status(403).json({ error: "Unauthorized Access!!, You only can update your data" });
+    // }
+
+    // 2. With Middleware
+
+
 
     // VALIDATION
     const { error } = validateUpdateUser(req.body);
@@ -57,4 +62,59 @@ router.put("/:id", verifyToken, asyncHandler(async (req, res) => {
     res.status(200).json(updatedUser);
   })
 );
+
+
+// =================================================================
+/*
+@desc Get All users
+@method GET
+@route api/users
+@access private (only admins)
+*/
+
+router.get('/', VerifyTokenAndAdmin, asyncHandler (async (req,res)=>{
+
+    const users = await User.find().select("-password");
+    res.status(200).json(users);
+}));
+
+// =================================================================
+/*
+@desc Get user
+@method GET
+@route api/users/:id
+@access private (only admins and user himself)
+*/
+
+router.get('/:id', VerifyTokenAndAuthorization, asyncHandler( async (req,res)=>{
+
+    const user  = await User.findById(req.params.id);
+    if(user){
+       return res.status(200).json(user);
+   }
+   else{
+
+       return res.status(404).json({ error: "User not found" });
+   }
+}));
+// =================================================================
+/*
+@desc Delete user
+@method DELETE
+@route api/users/:id
+@access private (only admins and user himself)
+*/
+
+router.delete('/:id', VerifyTokenAndAuthorization, asyncHandler( async (req,res)=>{
+
+    const user  = await User.findById(req.params.id);
+    if (user) {
+        await User.findByIdAndDelete(req.params.id);
+       return res.status(200).json({message: "User Is Deleted Successfully"});
+    }
+    else{
+
+        return res.status(404).json({ error: "User not found" });
+    }
+}));
 module.exports = router;

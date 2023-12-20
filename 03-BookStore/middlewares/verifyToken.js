@@ -17,4 +17,28 @@ function verifyToken(req, res, next) {
       .json({ message: "Unauthorized Access!!, No Token Provided" });
   }
 }
-module.exports = {verifyToken};
+
+// Verify Token And Authorize The User
+function VerifyTokenAndAuthorization(req, res, next){
+    verifyToken(req, res, ()=>{
+        if(req.user.id === req.params.id || req.user.isAdmin){
+            next();
+        }
+        else{
+            return res.status(403).json({message:"Unauthorized Access!!, You are not allowed"});
+        }
+    })
+}
+
+// Verify Token And Admin
+function VerifyTokenAndAdmin(req, res, next){
+    verifyToken(req, res, ()=>{
+        if(req.user.isAdmin){
+            next();
+        }
+        else{
+            return res.status(403).json({message:"Unauthorized Access!!, Only Admins"});
+        }
+    })
+}
+module.exports = {verifyToken, VerifyTokenAndAdmin, VerifyTokenAndAuthorization };
