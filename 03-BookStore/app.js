@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const booksPath = require('./routes/books');
 const authorsPath = require('./routes/authors');
 const AuthPath = require('./routes/auth');
+const UsersPath = require('./routes/users');
 const logger = require('./middlewares/logger');
 const {notFound, errorsHandler} = require('./middlewares/errors');
 dotenv.config();
@@ -26,6 +27,7 @@ app.use(logger);
 app.use('/api/books', booksPath);
 app.use('/api/authors', authorsPath);
 app.use('/api/auth', AuthPath);
+app.use('/api/users', UsersPath);
 
 // ERROR HANDLER MIDDLEWARE
 app.use(notFound);
