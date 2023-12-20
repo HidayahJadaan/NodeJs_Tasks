@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const asyncHandler = require("express-async-handler");
+const { VerifyTokenAndAuthorization } = require("../middlewares/verifyToken");
+
 const {
   Author,
   ValidateAuthor,
@@ -73,9 +75,9 @@ router.get(
 @desc Create a new Book
 @method POST
 @route /api/authors/:id
-@access public
+@access public --> Private
 */
-router.post("/", asyncHandler( async (req, res) => {
+router.post("/", VerifyTokenAndAuthorization,asyncHandler( async (req, res) => {
   const { err } = ValidateAuthor(req.body);
   if (err) {
     return res.status(400).json({ message: err.details[0].message });
@@ -103,9 +105,9 @@ router.post("/", asyncHandler( async (req, res) => {
 @desc Update Certain book
 @method PUT
 @route /api/authors/:id
-@access public
+@access public --> private
 */
-router.put("/:id", asyncHandler( async (req, res) => {
+router.put("/:id", VerifyTokenAndAuthorization,asyncHandler( async (req, res) => {
   const { err } = ValidateUpdateAuthor(req.body);
   if (err) {
     return res.status(400).json({ message: err.details[0].message });
@@ -139,9 +141,9 @@ router.put("/:id", asyncHandler( async (req, res) => {
 @desc Delete Certain book
 @method DELETE
 @route /api/authors/:id
-@access public
+@access public --> private
 */
-router.delete("/:id", asyncHandler( async(req, res) => {
+router.delete("/:id", VerifyTokenAndAuthorization,asyncHandler( async(req, res) => {
   // const author = authors.find((author) => author.id === parseInt(req.params.id));
   const author = await Author.findByIdAndDelete(req.params.id);
   if (author) {
