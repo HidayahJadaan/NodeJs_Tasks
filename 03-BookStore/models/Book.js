@@ -26,7 +26,7 @@ const bookSchema = new mongoose.Schema({
     cover:{
         type: String,
         required: true,
-        enum:['Soft Cover', 'Hard Cover']
+        enum:['soft cover', 'hard cover']
     }
 },
 {timestamps: true}

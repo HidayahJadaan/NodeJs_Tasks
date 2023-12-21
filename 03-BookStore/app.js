@@ -1,20 +1,11 @@
 const express = require('express')
-const mongoose = require("mongoose");
 const dotenv = require('dotenv');
-const booksPath = require('./routes/books');
-const authorsPath = require('./routes/authors');
-const AuthPath = require('./routes/auth');
-const UsersPath = require('./routes/users');
 const logger = require('./middlewares/logger');
 const {notFound, errorsHandler} = require('./middlewares/errors');
+const connectionToDB = require('./config/db');
 dotenv.config();
 // CONNECTING TO THE DATABSE
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log("Connected to MongoDB--- BookStroeDB"))
-  .catch((err) =>
-    console.log("Could not Connect To MongoDB -- BookStoreDB", err.message)
-  );
+connectionToDB();
 
 // Init application   
 const app = express();
@@ -24,10 +15,10 @@ app.use(express.json());
 app.use(logger);
 
 // Routes
-app.use('/api/books', booksPath);
-app.use('/api/authors', authorsPath);
-app.use('/api/auth', AuthPath);
-app.use('/api/users', UsersPath);
+app.use('/api/books', require('./routes/books'));
+app.use('/api/authors', require('./routes/authors'));
+app.use('/api/auth',require('./routes/auth'));
+app.use('/api/users',  require('./routes/users'));
 
 // ERROR HANDLER MIDDLEWARE
 app.use(notFound);
@@ -36,5 +27,5 @@ app.use(errorsHandler);
 // Running The Server
 const PORT = process.env.PORT ||4000;
 app.listen(PORT, (req,res)=>{
-    console.log(`Server is running in${process.env.NODE_ENV} mode on port ${PORT}`);
+    console.log(`Server is running in ${process.env.NODE_ENV} mode on port ${PORT}`);
 });

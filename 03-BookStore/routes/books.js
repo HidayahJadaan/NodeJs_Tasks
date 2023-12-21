@@ -1,11 +1,15 @@
 const express = require("express");
 const router = express.Router();
-const joi = require("joi");
-const asyncHandler = require("express-async-handler");
-const { Book, ValidateBook, ValidateUpdateBook } = require("./../models/Book");
-const {verifyToken, VerifyTokenAndAdmin, VerifyTokenAndAuthorization } = require("../middlewares/verifyToken");
+const { VerifyTokenAndAuthorization } = require("../middlewares/verifyToken");
 
-
+const 
+{
+  getAllBooks,
+  getBook,
+  createBook,
+  updateBook,
+  deleteBook
+} = require ('./../controllers/bookController');
 // =================================================================
 
 // NO NEED FOR THIS WHEN WE ARE WORKING WITH MONGOOSE
@@ -39,121 +43,20 @@ const {verifyToken, VerifyTokenAndAdmin, VerifyTokenAndAuthorization } = require
 
 // ROUTES HANDLERS
 // =================================================================
-/*
-@desc Get All Books
-@method GET
-@route /api/books
-@access public
-*/
-router.get("/", asyncHandler(async(req, res) => {
-  const books = await Book.find();
-  res.status(200).json(books);
-}));
+// router.get("/", getAllBooks);
+// router.get("/:id", getBook);
+// router.post("/", VerifyTokenAndAuthorization, createBook);
+// router.put("/:id", VerifyTokenAndAuthorization, updateBook);
+// router.delete("/:id", VerifyTokenAndAuthorization, deleteBook);
 // =================================================================
-/*
-@desc GET certain Book
-@method GET
-@route /api/books/:id
-@access public
-*/
-router.get("/:id", asyncHandler( async (req, res) => {
-  // const book = books.find((book) => book.id === parseInt(req.params.id));
-  const book = await Book.findById(req.params.id);
-  if (book) {
-    res.status(200).json(book);
-  } else {
-    // return value is null
-    res.status(404).json({ message: "Book not found" });
-  }
-}));
+
+// Another Way For Writing ROUTES HANDLERS
 // =================================================================
-/*
-@desc Create a new Book
-@method POST
-@route /api/books/:id
-@access public --> private
-*/
-router.post("/", VerifyTokenAndAuthorization,asyncHandler( async (req, res) => {
-  const { err } = ValidateBook(req.body);
-  if (err) {
-    return res.status(400).json({ message: err.details[0].message });
-  }
-
-  // const newBook = {
-  //   title: req.body.title,
-  //   author: req.body.author,
-  //   description: req.body.description,
-  //   price: req.body.price,
-  // };
-  const newBook = new Book({
-    title: req.body.title,
-    author: req.body.author,
-    description: req.body.description,
-    price: req.body.price,
-    cover: req.body.cover,
-  });
-
-  const NewBook = await newBook.save();
-
-  // books.push(newBook);
-  // 201 --> Creatred Successfully
-  res.status(201).json(NewBook);
-}));
+// --> /api/books
+router.route('/').get(getAllBooks).post(VerifyTokenAndAuthorization,createBook);
+// --> /api/books/:id
+router.route('/:id').get(getBook).put(VerifyTokenAndAuthorization,updateBook).delete(VerifyTokenAndAuthorization,deleteBook);
 // =================================================================
-/*
-@desc Update Certain book
-@method PUT
-@route /api/books/:id
-@access public --> private
-*/
-router.put("/:id", VerifyTokenAndAuthorization,asyncHandler( async(req, res) => {
-  const { err } = ValidateUpdateBook(req.body);
-  if (err) {
-    return res.status(400).json({ message: err.details[0].message });
-  }
 
-  // const book = books.find((book) => book.id === parseInt(req.params.id));
-  const book = await Book.findByIdAndUpdate(
-    req.params.id,
-
-    {
-      $set: {
-        title: req.body.title,
-        author: req.body.author,
-        description: req.body.description,
-        price: req.body.price,
-        cover: req.body.cover,
-      },
-    },
-    { new: true }
-  );
-  if (book) {
-    res.status(200).json({
-      message: "Book Updated Successfully",
-    });
-  } else {
-    res.status(404).json({ message: "Book not found" });
-  }
-}));
-
-// =================================================================
-/*
-@desc Delete Certain book
-@method DELETE
-@route /api/books/:id
-@access public --> private
-*/
-router.delete("/:id", VerifyTokenAndAuthorization,asyncHandler( async(req, res) => {
-  // const book = books.find((book) => book.id === parseInt(req.params.id));
-  const book =await  Book.findByIdAndDelete(req.params.id);
-  if (book) {
-    res.status(200).json({
-      message: "Book Deleted Successfully",
-    });
-  } else {
-    res.status(404).json({ message: "Book not found" });
-  }
-}));
-// =================================================================
 
 module.exports = router;

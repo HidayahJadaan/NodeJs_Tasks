@@ -1,24 +1,33 @@
-// CREATING SIMPLE WEB SERVER
-
 const http = require("http");
 const url = require("url");
 const fs = require("fs");
-const slugify = require('slugify');
+const slugify = require("slugify");
 
+// Read data files and templates outside the request handler
+const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, "utf-8");
+const dataObj = JSON.parse(data);
 
+const tempOverview = fs.readFileSync(
+  `${__dirname}/templates/template-overview.html`,
+  "utf-8"
+);
+const tempProduct = fs.readFileSync(
+  `${__dirname}/templates/template-product.html`,
+  "utf-8"
+);
+const tempCard = fs.readFileSync(
+  `${__dirname}/templates/template-card.html`,
+  "utf-8"
+);
+
+// Create server and define request handling logic
 const server = http.createServer((req, res) => {
   const { query, pathname } = url.parse(req.url, true);
   // ===================================
 
-  const data = fs.readFileSync(`${__dirname}/dev-data/data.json`);
-  const dataObj = JSON.parse(data); //array of objects
-
-
-  const slugs = dataObj.map(el => slugify(el.productName),{lower: true});
+  const slugs = dataObj.map((el) => slugify(el.productName), { lower: true });
   // console.log(slugs);
-  
   // ===================================
-
   // using regular expression not "" | ' ==> because some times we have multiple items
   const replaceTemplate = (temp, product) => {
     let output = temp.replace(/{%PRODUCTNAME%}/g, product.productName);
@@ -35,19 +44,7 @@ const server = http.createServer((req, res) => {
     return output;
   };
 
-  // 1. Read Template Overview(only once)
-  const tempOverview = fs.readFileSync(
-    `${__dirname}/templates/template-overview.html`,
-    "utf-8"
-  );
-  const tempProduct = fs.readFileSync(
-    `${__dirname}/templates/template-product.html`,
-    "utf-8"
-  );
-  const tempCard = fs.readFileSync(
-    `${__dirname}/templates/template-card.html`,
-    "utf-8"
-  );
+
 
   //   OVERVIEW PAGE
   if (pathname === "/" || pathname === "/overview") {
@@ -61,9 +58,8 @@ const server = http.createServer((req, res) => {
 
     // PRODUCT PAGE
   } else if (pathname === "/product") {
-
     res.writeHead(200, {
-      'Content-type': 'text/html'
+      "Content-type": "text/html",
     });
     const product = dataObj[query.id];
     const output = replaceTemplate(tempProduct, product);
@@ -85,8 +81,10 @@ const server = http.createServer((req, res) => {
     }); // in Network tab in Inspect
     res.end("<h1>PAGE NOT FOUND!!!!</h1>");
   }
-});
-// START LISTENING ON THE UPCOMMING REQUESTS
+}
+);
+
+// Start listening on the specified port
 server.listen(9000, "127.0.0.1", () => {
   console.log("LISTENING TO REQUESTS ON PORT 9000");
 });
