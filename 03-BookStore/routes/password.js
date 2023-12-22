@@ -1,5 +1,5 @@
 const express = require('express');
-const getForgotPasswordView = require('../controllers/PasswordController');
+const {getForgotPasswordView, sendForgotPasswordLink, getResetPasswordView, resetThePassword} = require('../controllers/PasswordController');
 const router = express.Router();
 
 // =================================================================
@@ -10,6 +10,8 @@ const router = express.Router();
 @access public
 */
 
-router.route('/forgot-password').get(getForgotPasswordView);
+router.route('/forgot-password').get(getForgotPasswordView).post(sendForgotPasswordLink);
+router.route('/reset-password/:userId/:token').get(getResetPasswordView).post(resetThePassword);
+
 
 module.exports = router;

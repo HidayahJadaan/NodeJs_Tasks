@@ -13,6 +13,7 @@ const app = express();
 app.use(express.json());
 // CUSTOM MIDDLEWARE
 app.use(logger);
+app.use(express.urlencoded({ extended: true }));
 
 // Template Engine
 app.set('view engine', 'ejs');
