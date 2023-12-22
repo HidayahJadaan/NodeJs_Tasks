@@ -3,12 +3,17 @@ const dotenv = require('dotenv');
 const logger = require('./middlewares/logger');
 const {notFound, errorsHandler} = require('./middlewares/errors');
 const connectionToDB = require('./config/db');
+const path = require('path');
 dotenv.config();
 // CONNECTING TO THE DATABSE
 connectionToDB();
 
 // Init application   
 const app = express();
+
+// Static Folder
+app.use(express.static(path.join(__dirname, 'images')));
+
 // Apply Middleware
 app.use(express.json());
 // CUSTOM MIDDLEWARE
@@ -23,6 +28,7 @@ app.use('/api/books', require('./routes/books'));
 app.use('/api/authors', require('./routes/authors'));
 app.use('/api/auth',require('./routes/auth'));
 app.use('/api/users',  require('./routes/users'));
+app.use('/api/upload', require('./routes/upload'));
 app.use('/password', require('./routes/password'));
 
 // ERROR HANDLER MIDDLEWARE
