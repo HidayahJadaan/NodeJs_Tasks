@@ -20,7 +20,7 @@ const tempCard = fs.readFileSync(
   "utf-8"
 );
 
-// Create server and define request handling logic
+// // Create server and define request handling logic
 const server = http.createServer((req, res) => {
   const { query, pathname } = url.parse(req.url, true);
   // ===================================
@@ -83,6 +83,8 @@ const server = http.createServer((req, res) => {
   }
 }
 );
+// console.log("Hello World");
+console.log("Hello Hidayah");
 
 // Start listening on the specified port
 server.listen(9000, "127.0.0.1", () => {

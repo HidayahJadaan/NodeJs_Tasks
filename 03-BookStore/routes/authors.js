@@ -1,7 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const { VerifyTokenAndAuthorization } = require("../middlewares/verifyToken");
-const { getAllAuthors, getAuthor, createAuthor, updateAuthor, deleteAuthor } = require("../controllers/authorsControllers");
+const {
+  getAllAuthors,
+  getAuthor,
+  createAuthor,
+  updateAuthor,
+  deleteAuthor,
+} = require("../controllers/authorsControllers");
 
 // =================================================================
 
@@ -32,14 +38,13 @@ const { getAllAuthors, getAuthor, createAuthor, updateAuthor, deleteAuthor } = r
 
 // ROUTES HANDLERS
 
-router.get("/",getAllAuthors);
+router.get("/", getAllAuthors);
 
 router.get("/:id", getAuthor);
 
 router.post("/", VerifyTokenAndAuthorization, createAuthor);
 
 router.put("/:id", VerifyTokenAndAuthorization, updateAuthor);
-
 
 router.delete("/:id", VerifyTokenAndAuthorization, deleteAuthor);
 // =================================================================

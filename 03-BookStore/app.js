@@ -14,11 +14,15 @@ app.use(express.json());
 // CUSTOM MIDDLEWARE
 app.use(logger);
 
+// Template Engine
+app.set('view engine', 'ejs');
+
 // Routes
 app.use('/api/books', require('./routes/books'));
 app.use('/api/authors', require('./routes/authors'));
 app.use('/api/auth',require('./routes/auth'));
 app.use('/api/users',  require('./routes/users'));
+app.use('/password', require('./routes/password'));
 
 // ERROR HANDLER MIDDLEWARE
 app.use(notFound);
